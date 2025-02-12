@@ -6,6 +6,7 @@ export class PaymentService implements OnModuleInit {
   private readonly apiKey: string;
   private readonly apiSecret: string;
   private readonly logger = new Logger(PaymentService.name);
+  private initialized: boolean = false;
 
   constructor(private readonly configService: ConfigService) {
     this.apiKey = configService.get<string>('PAYMENT_API_KEY') ?? '';
@@ -13,7 +14,18 @@ export class PaymentService implements OnModuleInit {
     this.logger.log(`CREATED_PAYMENT_SERVICE ${this.apiKey}`);
   }
 
-  onModuleInit() {
+  async onModuleInit() {
     this.logger.log(`INITIATED_PAYMENT_SERVICE ${this.apiKey}`);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    this.initialized = true;
+  }
+
+  static createInstance(configService: ConfigService): PaymentService {
+    const instance = new PaymentService(configService);
+    // Skip the onModuleInit by setting any necessary initialized state
+    Object.assign(instance, {
+      initialized: true, // or whatever state you need
+    });
+    return instance;
   }
 }
