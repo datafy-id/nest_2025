@@ -9,8 +9,9 @@ export class PaymentService implements OnModuleInit {
   private initialized: boolean = false;
 
   constructor(private readonly configService: ConfigService) {
-    this.apiKey = configService.get<string>('PAYMENT_API_KEY') ?? '';
-    this.apiSecret = configService.get<string>('PAYMENT_API_SECRET') ?? '';
+    this.apiKey = configService.get<string>('PAYMENT_API_KEY') ?? 'KEY_NOT_SET';
+    this.apiSecret =
+      configService.get<string>('PAYMENT_API_SECRET') ?? 'SECRET_NOT_SET';
     this.logger.log(`CREATED_PAYMENT_SERVICE ${this.apiKey}`);
   }
 
