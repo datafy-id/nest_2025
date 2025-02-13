@@ -25,6 +25,31 @@ export interface PaymentModuleOptions {
   providers: [],
 })
 export class PaymentModule {
+  // -----------------------------------------------------------------------------
+  // for Root Implementation
+  // -----------------------------------------------------------------------------
+  static forRoot(): DynamicModule {
+    return {
+      module: PaymentModule,
+      global: true,
+      providers: [
+        {
+          provide: PaymentService,
+          useFactory: (configService: ConfigService) => {
+            const options = configService.get<PaymentModuleOptions>('payment')!;
+            return PaymentService.createInstance(options);
+          },
+          inject: [ConfigService],
+        },
+      ],
+      controllers: [PaymentController],
+      exports: [PaymentService],
+    };
+  }
+
+  // -----------------------------------------------------------------------------
+  // for Feature Implementation
+  // -----------------------------------------------------------------------------
   static forFeature(options?: PaymentModuleOptions): DynamicModule {
     return {
       module: PaymentModule,
