@@ -1,15 +1,12 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 
 @Controller('payment')
 export class PaymentController {
-  constructor(
-    @Inject('PAYMENT_SERVICES') private paymentServices: PaymentService[],
-  ) {}
+  constructor(private paymentService: PaymentService) {}
 
   @Get()
   getHello(): string {
-    const count = this.paymentServices.length;
-    return `NUMBER_OF_PAYMENT_SERVICES_INSTANCES: ${count}`;
+    return `PAYMENT_SERVICE_INSTANCE: ${JSON.stringify(this.paymentService.getOptions())}`;
   }
 }

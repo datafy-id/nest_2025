@@ -21,49 +21,34 @@ export interface PaymentModuleOptions {
       } as PaymentModuleOptions,
     })),
   ],
-  controllers: [PaymentController],
-  providers: [
-    {
-      provide: 'PAYMENT_SERVICES',
-      useFactory: async (configService: ConfigService) => {
-        // Create a base instance that will handle initialization
-        const opts = configService.get<PaymentModuleOptions>('payment')!;
-        const baseService = new PaymentService(opts);
-        // Wait for initialization if needed
-        await baseService.onModuleInit();
-
-        // Create additional instances using the factory method
-        return [
-          baseService,
-          PaymentService.createInstance(opts),
-          PaymentService.createInstance(opts),
-        ];
-      },
-      inject: [ConfigService],
-    },
-  ],
+  controllers: [],
+  providers: [],
 })
 export class PaymentModule {
-  static forFeature(options: PaymentModuleOptions): DynamicModule {
+  static forFeature(options?: PaymentModuleOptions): DynamicModule {
     return {
       module: PaymentModule,
       providers: [
         {
           provide: 'PAYMENT_OPTIONS',
-          useValue: options,
+          useFactory: (configService: ConfigService) => {
+            if (options) {
+              return options;
+            }
+            return configService.get<PaymentModuleOptions>('payment');
+          },
+          inject: [ConfigService],
         },
-        // Add your payment services here
         {
           provide: PaymentService,
           useFactory: (options: PaymentModuleOptions) => {
             return PaymentService.createInstance(options);
           },
-          inject: [],
+          inject: ['PAYMENT_OPTIONS'],
         },
       ],
-      exports: [
-        // Export your services here
-      ],
+      controllers: [PaymentController],
+      exports: [PaymentService],
     };
   }
 }

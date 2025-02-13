@@ -27,6 +27,10 @@ export class PaymentService implements OnModuleInit {
     this.initialized = true;
   }
 
+  getOptions() {
+    return this.options;
+  }
+
   static createInstance(options: PaymentModuleOptions): PaymentService {
     const instance = new PaymentService(options);
     // Skip the onModuleInit by setting any necessary initialized state

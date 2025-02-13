@@ -10,7 +10,11 @@ import { ConfigModule } from '@nestjs/config';
       envFilePath: ['.env.local', '.env'],
       isGlobal: true,
     }),
-    PaymentModule,
+    PaymentModule.forFeature({
+      merchantId: 'ZZZ',
+      apiKey: 'ZZZPRODUCTION',
+      apiSecret: 'SECRET',
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
