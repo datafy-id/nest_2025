@@ -1,18 +1,24 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { PaymentModuleOptions } from './payment.module';
 
 @Injectable()
 export class PaymentService implements OnModuleInit {
+  private readonly merchantId: string;
   private readonly apiKey: string;
   private readonly apiSecret: string;
   private readonly logger = new Logger(PaymentService.name);
   private initialized: boolean = false;
 
-  constructor(private readonly configService: ConfigService) {
-    this.apiKey = configService.get<string>('PAYMENT_API_KEY') ?? 'KEY_NOT_SET';
-    this.apiSecret =
-      configService.get<string>('PAYMENT_API_SECRET') ?? 'SECRET_NOT_SET';
-    this.logger.log(`CREATED_PAYMENT_SERVICE ${this.apiKey}`);
+  constructor(
+    @Inject('PAYMENT_OPTIONS')
+    private readonly options: PaymentModuleOptions,
+  ) {
+    this.merchantId = options.merchantId ?? 'MERCHANT_NOT_SET';
+    this.apiKey = options.apiKey ?? 'KEY_NOT_SET';
+    this.apiSecret = options.apiSecret ?? 'SECRET_NOT_SET';
+    this.logger.log(
+      `CREATED_PAYMENT_SERVICE ${this.merchantId} ${this.apiKey}`,
+    );
   }
 
   async onModuleInit() {
@@ -21,8 +27,8 @@ export class PaymentService implements OnModuleInit {
     this.initialized = true;
   }
 
-  static createInstance(configService: ConfigService): PaymentService {
-    const instance = new PaymentService(configService);
+  static createInstance(options: PaymentModuleOptions): PaymentService {
+    const instance = new PaymentService(options);
     // Skip the onModuleInit by setting any necessary initialized state
     Object.assign(instance, {
       initialized: true, // or whatever state you need
