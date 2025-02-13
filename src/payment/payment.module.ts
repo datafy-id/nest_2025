@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { PaymentController } from './payment.controller';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [],
   controllers: [PaymentController],
   providers: [
     {
