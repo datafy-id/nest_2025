@@ -13,9 +13,9 @@ export class PaymentService implements OnModuleInit {
     @Inject('PAYMENT_OPTIONS')
     private readonly options: PaymentModuleOptions,
   ) {
-    this.merchantId = options.merchantId ?? 'MERCHANT_NOT_SET';
-    this.apiKey = options.apiKey ?? 'KEY_NOT_SET';
-    this.apiSecret = options.apiSecret ?? 'SECRET_NOT_SET';
+    this.merchantId = options.merchantId;
+    this.apiKey = options.apiKey;
+    this.apiSecret = options.apiSecret;
     this.logger.log(
       `CREATED_PAYMENT_SERVICE ${this.merchantId} ${this.apiKey}`,
     );
